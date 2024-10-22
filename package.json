@@ -40,7 +40,7 @@
   }
 }
 {
-  "homepage": "https://[Wewe1988].github.io/hebrew-exam-app",
+  "homepage": "homepage": "https://lwewe1988.github.io/Ispeak",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
