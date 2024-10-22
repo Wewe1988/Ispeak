@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Ispeak/static/css/main.7d038d03.css",
+    "main.js": "/Ispeak/static/js/main.036a591e.js",
+    "static/js/453.6ec7257a.chunk.js": "/Ispeak/static/js/453.6ec7257a.chunk.js",
+    "index.html": "/Ispeak/index.html",
+    "main.7d038d03.css.map": "/Ispeak/static/css/main.7d038d03.css.map",
+    "main.036a591e.js.map": "/Ispeak/static/js/main.036a591e.js.map",
+    "453.6ec7257a.chunk.js.map": "/Ispeak/static/js/453.6ec7257a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7d038d03.css",
+    "static/js/main.036a591e.js"
+  ]
+}
