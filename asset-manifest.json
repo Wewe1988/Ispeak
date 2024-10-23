@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Ispeak/static/css/main.7d038d03.css",
-    "main.js": "/Ispeak/static/js/main.036a591e.js",
+    "main.css": "/Ispeak/static/css/main.fbea8645.css",
+    "main.js": "/Ispeak/static/js/main.3ad1ad17.js",
     "static/js/453.6ec7257a.chunk.js": "/Ispeak/static/js/453.6ec7257a.chunk.js",
     "index.html": "/Ispeak/index.html",
-    "main.7d038d03.css.map": "/Ispeak/static/css/main.7d038d03.css.map",
-    "main.036a591e.js.map": "/Ispeak/static/js/main.036a591e.js.map",
+    "main.fbea8645.css.map": "/Ispeak/static/css/main.fbea8645.css.map",
+    "main.3ad1ad17.js.map": "/Ispeak/static/js/main.3ad1ad17.js.map",
     "453.6ec7257a.chunk.js.map": "/Ispeak/static/js/453.6ec7257a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7d038d03.css",
-    "static/js/main.036a591e.js"
+    "static/css/main.fbea8645.css",
+    "static/js/main.3ad1ad17.js"
   ]
 }
