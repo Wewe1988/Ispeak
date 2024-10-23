@@ -6,6 +6,8 @@ function App() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState('');
+  const [recordingSegments, setRecordingSegments] = useState(0);
+  const [currentRecording, setCurrentRecording] = useState(null);
   const [questions, setQuestions] = useState([
     // פרק 1
     { text: 'תאר את המקום האהוב עליך', section: 1 },
@@ -22,9 +24,9 @@ function App() {
     { text: 'איך לדעתך ניתן לשפר את מערכת החינוך?', section: 2 },
     { text: 'מה דעתך על למידה מקוונת לעומת למידה פרונטלית?', section: 2 },
     // פרק 3 (עם סרטון)
-    { text: 'צפה בסרטון וענה: מה המסר העיקרי?', section: 3, video: 'https://www.youtube.com/watch?v=jwpygjVPoAI' },
-    { text: 'איך הסרטון מתקשר לחיי היומיום שלך?', section: 3 },
-    { text: 'מה דעתך על הרעיון המוצג בסרטון?', section: 3 }
+    { text: 'צפה בסרטון וענה: מה המסר העיקרי?', section: 3, video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
+    { text: 'איך הסרטון מתקשר לחיי היומיום שלך?', section: 3, video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
+    { text: 'מה דעתך על הרעיון המוצג בסרטון?', section: 3, video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }
   ]);
   const [newQuestion, setNewQuestion] = useState('');
   const [selectedSection, setSelectedSection] = useState(1);
@@ -34,7 +36,7 @@ function App() {
   const mediaRecorder = useRef(null);
   const timerRef = useRef(null);
 
-  const [criteria, setCriteria] = useState([
+  const [criteria] = useState([
     { name: 'שטף דיבור', weight: 0.3 },
     { name: 'דיוק לשוני', weight: 0.3 },
     { name: 'תוכן התשובה', weight: 0.4 }
@@ -56,6 +58,11 @@ function App() {
   };
 
   const startRecording = () => {
+    if (recordingSegments >= 2) {
+      alert('הגעת למספר המקסימלי של מקטעי הקלטה (2)');
+      return;
+    }
+
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
         mediaRecorder.current = new MediaRecorder(stream);
@@ -76,6 +83,8 @@ function App() {
           const audioBlob = new Blob(audioChunks);
           const audioUrl = URL.createObjectURL(audioBlob);
           setAudioURL(audioUrl);
+          setCurrentRecording({ question: questions[currentQuestion].text, audio: audioUrl });
+          setRecordingSegments(prev => prev + 1);
           setAnswers([...answers, { question: questions[currentQuestion].text, audio: audioUrl }]);
         });
       });
@@ -89,31 +98,22 @@ function App() {
     }
   };
 
+  const deleteRecording = () => {
+    setAudioURL('');
+    setCurrentRecording(null);
+    setRecordingSegments(prev => prev - 1);
+    // מחיקת התשובה האחרונה מהמערך
+    setAnswers(answers.slice(0, -1));
+  };
+
   const nextQuestion = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setAudioURL('');
       setTimeLeft(50);
       setFeedback('');
+      setRecordingSegments(0); // איפוס מונה המקטעים בשאלה חדשה
     }
-  };
-
-  const addQuestion = () => {
-    if (newQuestion.trim() !== '') {
-      const sectionQuestions = questions.filter(q => q.section === selectedSection);
-      if (sectionQuestions.length < (selectedSection === 3 ? 3 : 9)) {
-        setQuestions([...questions, { text: newQuestion, section: selectedSection }]);
-        setNewQuestion('');
-      } else {
-        alert('הגעת למספר המקסימלי של שאלות בפרק זה');
-      }
-    }
-  };
-
-  const editQuestion = (index, newText) => {
-    const updatedQuestions = [...questions];
-    updatedQuestions[index].text = newText;
-    setQuestions(updatedQuestions);
   };
 
   const generateFeedback = () => {
@@ -159,7 +159,12 @@ function App() {
               <option value={2}>פרק 2</option>
               <option value={3}>פרק 3 (סרטון)</option>
             </select>
-            <button onClick={addQuestion}>הוסף שאלה</button>
+            <button onClick={() => {
+              if (newQuestion.trim() !== '') {
+                setQuestions([...questions, { text: newQuestion, section: selectedSection }]);
+                setNewQuestion('');
+              }
+            }}>הוסף שאלה</button>
           </div>
           <h3>שאלות קיימות:</h3>
           {[1, 2, 3].map(section => (
@@ -171,27 +176,26 @@ function App() {
                     <input 
                       type="text" 
                       value={q.text} 
-                      onChange={(e) => editQuestion(questions.indexOf(q), e.target.value)} 
+                      onChange={(e) => {
+                        const updatedQuestions = [...questions];
+                        const questionIndex = questions.indexOf(q);
+                        updatedQuestions[questionIndex] = { ...q, text: e.target.value };
+                        setQuestions(updatedQuestions);
+                      }} 
                     />
                   </li>
                 ))}
               </ul>
             </div>
           ))}
-          <h3>קריטריונים למשוב:</h3>
-          <ul>
-            {criteria.map((criterion, index) => (
-              <li key={index}>
-                {criterion.name} - משקל: {criterion.weight}
-              </li>
-            ))}
-          </ul>
+          <TeacherAnswersView />
         </div>
       ) : (
         <div>
           <h2>שאלה {currentQuestion + 1} (פרק {questions[currentQuestion].section})</h2>
           <p className="question">{questions[currentQuestion].text}</p>
-          {questions[currentQuestion].video && (
+          
+          {questions[currentQuestion].section === 3 && (
             <div className="video-container">
               <iframe
                 width="560"
@@ -204,11 +208,31 @@ function App() {
               />
             </div>
           )}
-          <div className="timer">זמן נותר: {timeLeft} שניות</div>
-          <button onClick={recording ? stopRecording : startRecording}>
-            {recording ? 'עצור הקלטה' : 'התחל הקלטה'}
-          </button>
-          {audioURL && <audio src={audioURL} controls />}
+          
+          <div className="recording-section">
+            <div className="timer">זמן נותר: {timeLeft} שניות</div>
+            <div className="recording-status">
+              {recording && <div className="recording-indicator">מקליט...</div>}
+              <button 
+                onClick={recording ? stopRecording : startRecording}
+                disabled={recordingSegments >= 2 && !recording}
+              >
+                {recording ? 'עצור הקלטה' : 'התחל הקלטה'}
+              </button>
+              {audioURL && (
+                <div className="recording-controls">
+                  <audio src={audioURL} controls />
+                  <button onClick={deleteRecording} className="delete-button">
+                    מחק הקלטה
+                  </button>
+                </div>
+              )}
+              <div className="segments-counter">
+                מקטעי הקלטה: {recordingSegments}/2
+              </div>
+            </div>
+          </div>
+
           <button onClick={nextQuestion}>שאלה הבאה</button>
           <button onClick={generateFeedback}>קבל משוב</button>
           {feedback && (
@@ -223,5 +247,48 @@ function App() {
     </div>
   );
 }
+
+const TeacherAnswersView = () => {
+  const [savedAnswers, setSavedAnswers] = useState([]);
+
+  useEffect(() => {
+    const answers = localStorage.getItem('studentAnswers');
+    if (answers) {
+      setSavedAnswers(JSON.parse(answers));
+    }
+  }, []);
+
+  return (
+    <div className="answers-view">
+      <h3>תשובות התלמידים</h3>
+      {savedAnswers.length > 0 ? (
+        <div>
+          {savedAnswers.map((answer, index) => (
+            <div key={index} className="answer-item">
+              <h4>שאלה: {answer.question}</h4>
+              {answer.audio && (
+                <div>
+                  <p>תשובה מוקלטת:</p>
+                  <audio src={answer.audio} controls />
+                </div>
+              )}
+              <hr />
+            </div>
+          ))}
+          <button 
+            onClick={() => {
+              localStorage.removeItem('studentAnswers');
+              setSavedAnswers([]);
+            }}
+          >
+            נקה את כל התשובות
+          </button>
+        </div>
+      ) : (
+        <p>אין תשובות שמורות כרגע</p>
+      )}
+    </div>
+  );
+};
 
 export default App;
