@@ -6,6 +6,7 @@ function App() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState('');
+  const [audioChunks, setAudioChunks] = useState([]);
   const [recordingSegments, setRecordingSegments] = useState(0);
   const [currentRecording, setCurrentRecording] = useState(null);
   const [questions, setQuestions] = useState([
@@ -73,19 +74,32 @@ function App() {
           setTimeLeft((prevTime) => prevTime - 1);
         }, 1000);
 
-        const audioChunks = [];
+        const chunks = [];
         mediaRecorder.current.addEventListener("dataavailable", event => {
-          audioChunks.push(event.data);
+          chunks.push(event.data);
         });
 
         mediaRecorder.current.addEventListener("stop", () => {
           clearInterval(timerRef.current);
-          const audioBlob = new Blob(audioChunks);
-          const audioUrl = URL.createObjectURL(audioBlob);
-          setAudioURL(audioUrl);
-          setCurrentRecording({ question: questions[currentQuestion].text, audio: audioUrl });
-          setRecordingSegments(prev => prev + 1);
-          setAnswers([...answers, { question: questions[currentQuestion].text, audio: audioUrl }]);
+          setAudioChunks(prevChunks => [...prevChunks, ...chunks]);
+          const newSegments = recordingSegments + 1;
+          setRecordingSegments(newSegments);
+          
+          // מאחד את כל המקטעים להקלטה אחת
+          const allChunks = [...audioChunks, ...chunks];
+          const finalBlob = new Blob(allChunks, { type: 'audio/wav' });
+          const finalAudioUrl = URL.createObjectURL(finalBlob);
+          setAudioURL(finalAudioUrl);
+
+          if (newSegments === 2) {
+            setAnswers([...answers, { 
+              question: questions[currentQuestion].text, 
+              audio: finalAudioUrl 
+            }]);
+          }
+
+          // משחרר את הזרם
+          stream.getTracks().forEach(track => track.stop());
         });
       });
   };
@@ -101,9 +115,11 @@ function App() {
   const deleteRecording = () => {
     setAudioURL('');
     setCurrentRecording(null);
-    setRecordingSegments(prev => prev - 1);
-    // מחיקת התשובה האחרונה מהמערך
-    setAnswers(answers.slice(0, -1));
+    setRecordingSegments(0);
+    setAudioChunks([]);
+    if (answers.length > 0) {
+      setAnswers(answers.slice(0, -1));
+    }
   };
 
   const nextQuestion = () => {
@@ -112,7 +128,8 @@ function App() {
       setAudioURL('');
       setTimeLeft(50);
       setFeedback('');
-      setRecordingSegments(0); // איפוס מונה המקטעים בשאלה חדשה
+      setRecordingSegments(0);
+      setAudioChunks([]);
     }
   };
 
@@ -215,15 +232,25 @@ function App() {
               {recording && <div className="recording-indicator">מקליט...</div>}
               <button 
                 onClick={recording ? stopRecording : startRecording}
-                disabled={recordingSegments >= 2 && !recording}
+                disabled={recordingSegments >= 2}
+                className={recordingSegments >= 2 ? 'button-disabled' : ''}
               >
-                {recording ? 'עצור הקלטה' : 'התחל הקלטה'}
+                {recording ? 'עצור הקלטה' : recordingSegments === 2 ? 'הקלטה הושלמה' : 'התחל הקלטה'}
               </button>
               {audioURL && (
                 <div className="recording-controls">
                   <audio src={audioURL} controls />
-                  <button onClick={deleteRecording} className="delete-button">
-                    מחק הקלטה
+                  {recordingSegments < 2 && (
+                    <div className="recording-message">
+                      ניתן להקליט עוד {2 - recordingSegments} מקטעים
+                    </div>
+                  )}
+                  <button 
+                    onClick={deleteRecording} 
+                    className="delete-button"
+                    disabled={recording}
+                  >
+                    מחק הקלטה והתחל מחדש
                   </button>
                 </div>
               )}

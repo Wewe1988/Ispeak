@@ -34,9 +34,10 @@ button:hover {
   background-color: #45a049;
 }
 
-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
+button:disabled, .button-disabled {
+  background-color: #cccccc !important;
+  cursor: not-allowed !important;
+  opacity: 0.7;
 }
 
 input[type="text"], select {
@@ -45,6 +46,7 @@ input[type="text"], select {
   font-size: 16px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  width: 200px;
 }
 
 .question {
@@ -59,6 +61,7 @@ input[type="text"], select {
   font-size: 24px;
   margin: 10px 0;
   color: #d9534f;
+  font-weight: bold;
 }
 
 .video-container {
@@ -67,6 +70,8 @@ input[type="text"], select {
   padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
   height: 0;
   overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .video-container iframe {
@@ -75,6 +80,82 @@ input[type="text"], select {
   left: 0;
   width: 100%;
   height: 100%;
+  border-radius: 8px;
+}
+
+.recording-section {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.recording-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.recording-indicator {
+  color: red;
+  font-weight: bold;
+  animation: blink 1s infinite;
+  padding: 5px 10px;
+  background-color: rgba(255, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.recording-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 400px;
+  margin: 10px auto;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.recording-message {
+  color: #666;
+  font-size: 14px;
+  margin: 5px 0;
+  padding: 5px;
+  background-color: #fff3cd;
+  border-radius: 4px;
+}
+
+.delete-button {
+  background-color: #dc3545 !important;
+  margin-top: 10px;
+}
+
+.delete-button:hover {
+  background-color: #c82333 !important;
+}
+
+.delete-button:disabled {
+  background-color: #dc354580 !important;
+}
+
+.segments-counter {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+  background-color: #e9ecef;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 .feedback {
@@ -116,52 +197,11 @@ input[type="text"], select {
   margin: 15px 0;
 }
 
-.recording-section {
-  margin: 20px 0;
-  padding: 15px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-}
-
-.recording-status {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.recording-indicator {
-  color: red;
-  font-weight: bold;
-  animation: blink 1s infinite;
-}
-
-.recording-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+audio {
   width: 100%;
-  max-width: 400px;
-}
-
-.delete-button {
-  background-color: #dc3545;
-}
-
-.delete-button:hover {
-  background-color: #c82333;
-}
-
-.segments-counter {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #666;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
+  height: 40px;
+  margin: 10px 0;
+  border-radius: 20px;
 }
 
 ul {
@@ -171,9 +211,4 @@ ul {
 
 li {
   margin-bottom: 10px;
-}
-
-audio {
-  margin: 10px 0;
-  width: 100%;
 }
