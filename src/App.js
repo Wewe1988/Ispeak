@@ -160,7 +160,8 @@ const LoginScreen = ({ onSubmit, onTeacherLogin }) => {
             מורה
           </button>
         </div>
-        {isTeacherLogin ? (
+
+[המשך בחלק הבא...]{isTeacherLogin ? (
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>סיסמת מורה:</label>
@@ -250,135 +251,136 @@ function App() {
     { name: 'דיוק לשוני', weight: 0.3 },
     { name: 'תוכן התשובה', weight: 0.4 }
   ]);
-  // המשך הקוד מהחלק הקודם...
 
-  const calculateSectionScore = (sectionNumber, criteriaScores) => {
-    const sectionQuestions = questions.filter(q => q.section === sectionNumber);
-    const totalSectionPoints = sectionQuestions.reduce((sum, q) => sum + q.points, 0);
-    const averageCriteriaScore = Object.values(criteriaScores).reduce((a, b) => a + b, 0) / Object.values(criteriaScores).length;
-    return (averageCriteriaScore * totalSectionPoints) / 4;
-  };
+// המשך הקוד מהחלק הקודם...
 
-  const generateFeedback = () => {
-    let feedbackText = "פירוט ציונים:\n\n";
-    const criteriaScores = {};
-    
-    criteria.forEach(criterion => {
-      const score = Math.floor(Math.random() * 4) + 1;
-      criteriaScores[criterion.name] = score;
-      feedbackText += `${criterion.name}: ${score}/4\n`;
-    });
-    
-    feedbackText += "\nציוני הפרקים:\n";
-    
-    const section1Score = calculateSectionScore(1, criteriaScores);
-    const section2Score = calculateSectionScore(2, criteriaScores);
-    const section3Score = calculateSectionScore(3, criteriaScores);
-    
-    feedbackText += `פרק ראשון - הצגה עצמית / היכרות: ${section1Score.toFixed(1)}/35 נקודות\n`;
-    feedbackText += `פרק שני - הצגת נושא: ${section2Score.toFixed(1)}/35 נקודות\n`;
-    feedbackText += `פרק שלישי - סרטון: ${section3Score.toFixed(1)}/30 נקודות\n`;
-    feedbackText += "----------\n";
-    
-    const totalScore = section1Score + section2Score + section3Score;
-    feedbackText += `ציון סופי: ${totalScore.toFixed(1)}/100 נקודות`;
-    
-    setFeedback(feedbackText);
-  };
+const calculateSectionScore = (sectionNumber, criteriaScores) => {
+  const sectionQuestions = questions.filter(q => q.section === sectionNumber);
+  const totalSectionPoints = sectionQuestions.reduce((sum, q) => sum + q.points, 0);
+  const averageCriteriaScore = Object.values(criteriaScores).reduce((a, b) => a + b, 0) / Object.values(criteriaScores).length;
+  return (averageCriteriaScore * totalSectionPoints) / 4;
+};
 
-  const startRecording = () => {
-    if (recordingSegments >= 2) {
-      alert('הגעת למספר המקסימלי של מקטעי הקלטה (2)');
-      return;
-    }
+const generateFeedback = () => {
+  let feedbackText = "פירוט ציונים:\n\n";
+  const criteriaScores = {};
+  
+  criteria.forEach(criterion => {
+    const score = Math.floor(Math.random() * 4) + 1;
+    criteriaScores[criterion.name] = score;
+    feedbackText += `${criterion.name}: ${score}/4\n`;
+  });
+  
+  feedbackText += "\nציוני הפרקים:\n";
+  
+  const section1Score = calculateSectionScore(1, criteriaScores);
+  const section2Score = calculateSectionScore(2, criteriaScores);
+  const section3Score = calculateSectionScore(3, criteriaScores);
+  
+  feedbackText += `פרק ראשון - הצגה עצמית / היכרות: ${section1Score.toFixed(1)}/35 נקודות\n`;
+  feedbackText += `פרק שני - הצגת נושא: ${section2Score.toFixed(1)}/35 נקודות\n`;
+  feedbackText += `פרק שלישי - סרטון: ${section3Score.toFixed(1)}/30 נקודות\n`;
+  feedbackText += "----------\n";
+  
+  const totalScore = section1Score + section2Score + section3Score;
+  feedbackText += `ציון סופי: ${totalScore.toFixed(1)}/100 נקודות`;
+  
+  setFeedback(feedbackText);
+};
 
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(stream => {
-        mediaRecorder.current = new MediaRecorder(stream);
-        mediaRecorder.current.start();
-        setRecording(true);
-        
-        const chunks = [];
-        mediaRecorder.current.addEventListener("dataavailable", event => {
-          chunks.push(event.data);
-        });
+const startRecording = () => {
+  if (recordingSegments >= 2) {
+    alert('הגעת למספר המקסימלי של מקטעי הקלטה (2)');
+    return;
+  }
 
-        mediaRecorder.current.addEventListener("stop", () => {
-          setAudioChunks(prevChunks => [...prevChunks, ...chunks]);
-          const newSegments = recordingSegments + 1;
-          setRecordingSegments(newSegments);
-          
-          const allChunks = [...audioChunks, ...chunks];
-          const finalBlob = new Blob(allChunks, { type: 'audio/wav' });
-          const finalAudioUrl = URL.createObjectURL(finalBlob);
-          setAudioURL(finalAudioUrl);
-
-          if (newSegments === 2) {
-            const answerData = {
-              studentName: userDetails?.studentName || 'אנונימי',
-              className: userDetails?.className || 'לא צוין',
-              teacherName: userDetails?.teacherName || 'לא צוין',
-              question: questions[currentQuestion].text,
-              section: questions[currentQuestion].section,
-              audio: finalAudioUrl,
-              timestamp: new Date().toISOString()
-            };
-            setAnswers(prev => [...prev, answerData]);
-          }
-
-          stream.getTracks().forEach(track => track.stop());
-        });
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      mediaRecorder.current = new MediaRecorder(stream);
+      mediaRecorder.current.start();
+      setRecording(true);
+      
+      const chunks = [];
+      mediaRecorder.current.addEventListener("dataavailable", event => {
+        chunks.push(event.data);
       });
-  };
 
-  return (
-    <div className="App">
-      {isLoginScreen ? (
-        <LoginScreen 
-          onSubmit={(details) => {
-            setUserDetails(details);
-            setIsLoginScreen(false);
-          }}
-          onTeacherLogin={() => {
-            setIsTeacher(true);
-            setIsLoginScreen(false);
-          }}
-        />
-      ) : (
-        <div className="exam-container">
-          <ExamTimer />
-          {isTeacher ? (
-            <TeacherView 
-              questions={questions}
-              setQuestions={setQuestions}
-              onLogout={() => {
-                setIsLoginScreen(true);
-                setIsTeacher(false);
-              }}
-            />
-          ) : (
-            <StudentView
-              userDetails={userDetails}
-              currentQuestion={currentQuestion}
-              questions={questions}
-              recording={recording}
-              audioURL={audioURL}
-              recordingSegments={recordingSegments}
-              timeLeft={totalTimeLeft}
-              onStartRecording={startRecording}
-              onStopRecording={stopRecording}
-              onDeleteRecording={deleteRecording}
-              onNextQuestion={nextQuestion}
-              onGenerateFeedback={generateFeedback}
-              feedback={feedback}
-              onSaveAnswers={sendAnswersToTeacher}
-              onLogout={() => setIsLoginScreen(true)}
-            />
-          )}
-        </div>
-      )}
-    </div>
-  );
+      mediaRecorder.current.addEventListener("stop", () => {
+        setAudioChunks(prevChunks => [...prevChunks, ...chunks]);
+        const newSegments = recordingSegments + 1;
+        setRecordingSegments(newSegments);
+        
+        const allChunks = [...audioChunks, ...chunks];
+        const finalBlob = new Blob(allChunks, { type: 'audio/wav' });
+        const finalAudioUrl = URL.createObjectURL(finalBlob);
+        setAudioURL(finalAudioUrl);
+
+        if (newSegments === 2) {
+          const answerData = {
+            studentName: userDetails?.studentName || 'אנונימי',
+            className: userDetails?.className || 'לא צוין',
+            teacherName: userDetails?.teacherName || 'לא צוין',
+            question: questions[currentQuestion].text,
+            section: questions[currentQuestion].section,
+            audio: finalAudioUrl,
+            timestamp: new Date().toISOString()
+          };
+          setAnswers(prev => [...prev, answerData]);
+        }
+
+        stream.getTracks().forEach(track => track.stop());
+      });
+    });
+};
+
+return (
+  <div className="App">
+    {isLoginScreen ? (
+      <LoginScreen 
+        onSubmit={(details) => {
+          setUserDetails(details);
+          setIsLoginScreen(false);
+        }}
+        onTeacherLogin={() => {
+          setIsTeacher(true);
+          setIsLoginScreen(false);
+        }}
+      />
+    ) : (
+      <div className="exam-container">
+        <ExamTimer />
+        {isTeacher ? (
+          <TeacherView 
+            questions={questions}
+            setQuestions={setQuestions}
+            onLogout={() => {
+              setIsLoginScreen(true);
+              setIsTeacher(false);
+            }}
+          />
+        ) : (
+          <StudentView
+            userDetails={userDetails}
+            currentQuestion={currentQuestion}
+            questions={questions}
+            recording={recording}
+            audioURL={audioURL}
+            recordingSegments={recordingSegments}
+            timeLeft={totalTimeLeft}
+            onStartRecording={startRecording}
+            onStopRecording={stopRecording}
+            onDeleteRecording={deleteRecording}
+            onNextQuestion={nextQuestion}
+            onGenerateFeedback={generateFeedback}
+            feedback={feedback}
+            onSaveAnswers={sendAnswersToTeacher}
+            onLogout={() => setIsLoginScreen(true)}
+          />
+        )}
+      </div>
+    )}
+  </div>
+);
 }
 
 export default App;
