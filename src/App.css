@@ -1,73 +1,263 @@
+/* סגנונות בסיסיים */
 body {
   font-family: Arial, sans-serif;
   direction: rtl;
   background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
 }
 
 .App {
   text-align: center;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+/* שעון המבחן */
+.exam-timer {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: #fff;
+  padding: 10px 20px;
   border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 1000;
 }
 
-h1, h2, h3, h4 {
-  color: #333;
-}
-
-button {
-  margin: 5px;
-  padding: 10px 15px;
-  font-size: 16px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #45a049;
-}
-
-button:disabled, .button-disabled {
-  background-color: #cccccc !important;
-  cursor: not-allowed !important;
-  opacity: 0.7;
-}
-
-input[type="text"], select {
-  margin: 5px;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  width: 200px;
-}
-
-.question {
-  margin: 20px 0;
+.timer-display {
   font-size: 18px;
-  background-color: #e9e9e9;
-  padding: 15px;
-  border-radius: 4px;
-}
-
-.timer {
-  font-size: 24px;
-  margin: 10px 0;
-  color: #d9534f;
   font-weight: bold;
+  color: #dc3545;
 }
 
+/* מסך פתיחה */
+.welcome-screen {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.welcome-content {
+  text-align: right;
+}
+
+.welcome-content h1 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.2em;
+}
+
+.greeting {
+  font-size: 1.4em;
+  color: #34495e;
+  margin-bottom: 20px;
+}
+
+.instructions {
+  margin: 30px 0;
+}
+
+.instructions h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+.instructions ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.instructions li {
+  margin: 10px 0;
+  padding-right: 20px;
+  position: relative;
+}
+
+.instructions li:before {
+  content: "•";
+  color: #3498db;
+  position: absolute;
+  right: 0;
+}
+
+/* מערכת ניקוד */
+.scoring-system {
+  margin: 30px 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.score-table {
+  width: 100%;
+  margin: 15px 0;
+  border-collapse: collapse;
+}
+
+.score-table td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.score-table .score {
+  font-weight: bold;
+  text-align: left;
+  color: #2980b9;
+}
+
+.score-table .total {
+  font-weight: bold;
+  background-color: #e9ecef;
+}
+
+.score-table .total .score {
+  color: #27ae60;
+}
+
+/* טופס כניסה */
+.login-screen {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.login-form {
+  margin-top: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+/* כפתורים */
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.start-button {
+  background-color: #27ae60;
+  color: white;
+  width: 100%;
+  margin-top: 20px;
+  font-size: 18px;
+  padding: 15px;
+}
+
+.start-button:hover {
+  background-color: #219a52;
+  transform: translateY(-2px);
+}
+
+.submit-button {
+  background-color: #3498db;
+  color: white;
+  width: 100%;
+}
+
+.submit-button:hover {
+  background-color: #2980b9;
+}
+
+/* ניווט וממשק משתמש */
+.login-type-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.login-type-selector button {
+  flex: 1;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #6c757d;
+}
+
+.login-type-selector button.active {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+/* הקלטה ומשוב */
+.recording-section {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.recording-controls {
+  margin-top: 15px;
+}
+
+.recording-indicator {
+  color: #dc3545;
+  font-weight: bold;
+  margin: 10px 0;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+  margin-top: 10px;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+/* תצוגת וידאו */
 .video-container {
   margin: 20px 0;
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
   border-radius: 8px;
@@ -83,132 +273,42 @@ input[type="text"], select {
   border-radius: 8px;
 }
 
-.recording-section {
-  margin: 20px 0;
-  padding: 15px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.recording-status {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.recording-indicator {
-  color: red;
-  font-weight: bold;
-  animation: blink 1s infinite;
-  padding: 5px 10px;
-  background-color: rgba(255, 0, 0, 0.1);
-  border-radius: 4px;
-}
-
-.recording-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  max-width: 400px;
-  margin: 10px auto;
-  padding: 15px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.recording-message {
-  color: #666;
-  font-size: 14px;
-  margin: 5px 0;
-  padding: 5px;
-  background-color: #fff3cd;
-  border-radius: 4px;
-}
-
-.delete-button {
-  background-color: #dc3545 !important;
-  margin-top: 10px;
-}
-
-.delete-button:hover {
-  background-color: #c82333 !important;
-}
-
-.delete-button:disabled {
-  background-color: #dc354580 !important;
-}
-
-.segments-counter {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #666;
-  background-color: #e9ecef;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-weight: bold;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-
+/* משוב ותוצאות */
 .feedback {
   margin: 20px 0;
-  padding: 15px;
-  border: 1px solid #ddd;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-}
-
-.answers-view {
-  margin-top: 30px;
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: #f8f9fa;
   border-radius: 8px;
+  text-align: right;
 }
 
-.answer-item {
-  margin: 20px 0;
-  padding: 15px;
-  background-color: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.feedback pre {
+  font-family: inherit;
+  white-space: pre-wrap;
 }
 
-.answer-item h4 {
-  color: #333;
-  margin-bottom: 10px;
-}
+/* התאמה למסכים קטנים */
+@media (max-width: 768px) {
+  .App {
+    padding: 10px;
+  }
 
-.answer-item audio {
-  width: 100%;
-  margin: 10px 0;
-}
+  .welcome-screen,
+  .login-screen {
+    margin: 20px;
+    padding: 20px;
+  }
 
-.answer-item hr {
-  border: none;
-  border-top: 1px solid #ddd;
-  margin: 15px 0;
-}
+  .exam-timer {
+    position: static;
+    margin-bottom: 20px;
+  }
 
-audio {
-  width: 100%;
-  height: 40px;
-  margin: 10px 0;
-  border-radius: 20px;
-}
+  .form-group input {
+    padding: 8px;
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  margin-bottom: 10px;
+  .button {
+    padding: 10px 20px;
+  }
 }
