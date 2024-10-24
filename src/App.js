@@ -160,8 +160,7 @@ const LoginScreen = ({ onSubmit, onTeacherLogin }) => {
             מורה
           </button>
         </div>
-
-[המשך בחלק הבא...]{isTeacherLogin ? (
+{isTeacherLogin ? (
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>סיסמת מורה:</label>
@@ -251,7 +250,6 @@ function App() {
     { name: 'דיוק לשוני', weight: 0.3 },
     { name: 'תוכן התשובה', weight: 0.4 }
   ]);
-
 // המשך הקוד מהחלק הקודם...
 
 const calculateSectionScore = (sectionNumber, criteriaScores) => {
